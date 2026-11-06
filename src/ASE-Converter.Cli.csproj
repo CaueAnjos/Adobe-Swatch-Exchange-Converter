@@ -14,7 +14,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>ase-convert</ToolCommandName>
     <PackageId>AseConvert</PackageId> <!-- must be unique on nuget.org -->
-    <Version>0.1.5</Version> <!-- overridden by the release workflow from the git tag -->
+    <Version>0.1.6</Version> <!-- overridden by the release workflow from the git tag -->
     <Authors>CaueAnjos</Authors>
     <Description>Convert Adobe Swatch Exchange (.ase) palettes to Adobe Color (.aco), text and hex lists.</Description>
     <PackageTags>ase;aco;adobe;palette;swatch;color;cli</PackageTags>
