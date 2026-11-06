@@ -5,15 +5,6 @@ text (`.txt`) or hex lists (`.hex`).
 
 ## Install
 
-**With the .NET SDK (10+):**
-
-```sh
-dotnet tool install -g AseConvert
-```
-
-Update with `dotnet tool update -g AseConvert`. To try it without installing:
-`dnx AseConvert -- palettes/`.
-
 **Standalone binary (no .NET required):** download the archive for your platform
 from the [Releases](https://github.com/YOUR_USER/ase-convert/releases) page,
 extract it and put `ase-convert` on your `PATH`.
