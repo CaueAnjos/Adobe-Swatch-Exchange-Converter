@@ -26,6 +26,9 @@ jobs:
             echo "VERSION=0.0.0-dev" >> "$GITHUB_ENV"
           fi
 
+      - name: Change Directory
+        run: cd src
+
       - name: Pack dotnet tool
         run: dotnet pack -c Release -p:Version="$VERSION" -o artifacts
 
