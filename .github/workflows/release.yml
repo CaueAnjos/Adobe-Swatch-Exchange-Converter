@@ -8,6 +8,9 @@ on:
 permissions:
   contents: write
 
+env:
+  PROJECT: src/ASE-Converter.Cli.csproj # path to the .csproj, relative to the repo root
+
 jobs:
   release:
     runs-on: ubuntu-24.04
@@ -26,16 +29,13 @@ jobs:
             echo "VERSION=0.0.0-dev" >> "$GITHUB_ENV"
           fi
 
-      - name: Change Directory
-        run: cd src
-
       - name: Pack dotnet tool
-        run: dotnet pack -c Release -p:Version="$VERSION" -o artifacts
+        run: dotnet pack "$PROJECT" -c Release -p:Version="$VERSION" -o artifacts
 
       - name: Publish standalone binaries
         run: |
           for rid in win-x64 win-arm64 linux-x64 linux-arm64 osx-x64 osx-arm64; do
-            dotnet publish -c Release -r "$rid" --self-contained \
+            dotnet publish "$PROJECT" -c Release -r "$rid" --self-contained \
               -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true \
               -p:DebugType=None -p:Version="$VERSION" -o "publish/$rid"
             name="ase-convert-$VERSION-$rid"
