@@ -1,0 +1,62 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch: # dry run: builds everything, publishes nothing
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Work out version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+          else
+            echo "VERSION=0.0.0-dev" >> "$GITHUB_ENV"
+          fi
+
+      - name: Pack dotnet tool
+        run: dotnet pack -c Release -p:Version="$VERSION" -o artifacts
+
+      - name: Publish standalone binaries
+        run: |
+          for rid in win-x64 win-arm64 linux-x64 linux-arm64 osx-x64 osx-arm64; do
+            dotnet publish -c Release -r "$rid" --self-contained \
+              -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true \
+              -p:DebugType=None -p:Version="$VERSION" -o "publish/$rid"
+            name="ase-convert-$VERSION-$rid"
+            if [[ "$rid" == win-* ]]; then
+              (cd "publish/$rid" && zip -q "../../artifacts/$name.zip" ase-convert.exe)
+            else
+              tar -C "publish/$rid" -czf "artifacts/$name.tar.gz" ase-convert
+            fi
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-files
+          path: artifacts/*
+
+      - name: Push to NuGet
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: >
+          dotnet nuget push "artifacts/*.nupkg"
+          --api-key "${{ secrets.NUGET_API_KEY }}"
+          --source https://api.nuget.org/v3/index.json
+
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "$GITHUB_REF_NAME" artifacts/* --generate-notes

@@ -9,6 +9,26 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- dotnet tool packaging: `dotnet tool install -g AseConvert` -->
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>ase-convert</ToolCommandName>
+    <PackageId>AseConvert</PackageId> <!-- must be unique on nuget.org -->
+    <Version>0.1.0</Version> <!-- overridden by the release workflow from the git tag -->
+    <Authors>CaueAnjos</Authors>
+    <Description>Convert Adobe Swatch Exchange (.ase) palettes to Adobe Color (.aco), text and hex lists.</Description>
+    <PackageTags>ase;aco;adobe;palette;swatch;color;cli</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/CaueAnjos/Adobe-Swatch-Exchange-Converter</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/CaueAnjos/Adobe-Swatch-Exchange-Converter</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+ 
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Spectre.Console.Cli" Version="0.57.2" />
   </ItemGroup>
